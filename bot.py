@@ -43,4 +43,8 @@ async def winrate(interaction: discord.Interaction, win: int, lose: int):
 # 実行
 if __name__ == "__main__":
     keep_alive() # Webサーバーを起動
-    client.run("MTQ3MjMzMjY5Mjc0NDgzNTEyMg.GfKgrf.bz9XQbUhdzzRW6SZIfE3tbaZUScpJX_WSTpBmE")
+
+   import os
+# ...（中略）...
+token = os.getenv('MTQ3MjMzMjY5Mjc0NDgzNTEyMg.GlNKU2.NMa2HPR2ttkVBK2F7dA4EHMbmVNeLFnsd1Fd2w')
+client.run(token)
