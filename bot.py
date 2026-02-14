@@ -1,51 +1,48 @@
 import discord
 from discord import app_commands
-from flask import Flask
-from threading import Thread
 import os
 
-# --- Renderで寝落ちを防ぐための「生存確認」用設定 ---
+# --- サーバー維持用の設定 ---
+from flask import Flask
+from threading import Thread
+
 app = Flask('')
+
 @app.route('/')
 def home():
-    return "Bot is running!"
+    return "OK"
 
-def run_web_server():
-    # RenderはPort 8080や10000を使うことが多いです
+def run():
     app.run(host='0.0.0.0', port=8080)
 
 def keep_alive():
-    t = Thread(target=run_web_server)
+    t = Thread(target=run)
     t.start()
+# -------------------------
 
-# --- ここからはいつものボットの中身 ---
-class MyBot(discord.Client):
+class MyClient(discord.Client):
     def __init__(self):
         intents = discord.Intents.default()
-        intents.message_content = True 
+        intents.message_content = True
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
         await self.tree.sync()
 
-client = MyBot()
+client = MyClient()
 
 @client.tree.command(name="winrate", description="勝率を計算します")
 async def winrate(interaction: discord.Interaction, win: int, lose: int):
     total = win + lose
     if total == 0:
-        await interaction.response.send_message("まだ試合をしていませんね。")
+        await interaction.response.send_message("合計試合数が0なので計算できません！")
         return
     rate = (win / total) * 100
     await interaction.response.send_message(f"合計: {total}戦 {win}勝 {lose}敗\n勝率: **{rate:.1f} %**")
 
 # 実行
 if __name__ == "__main__":
-    keep_alive() # Webサーバーを起動
-
-import os
-# ...（中略）...
-client.run(os.getenv('DISCORD_TOKEN'))
-
-
+    keep_alive()  # Webサーバーを起動
+    token = os.getenv('DISCORD_TOKEN')
+    client.run(token)
