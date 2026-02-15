@@ -93,9 +93,11 @@ async def coin(interaction: discord.Interaction):
 async def lfm(
     interaction: discord.Interaction, 
     mode: Literal["ZW", "FFA", "BOX", "1v1", "通話"], 
-    count: Literal[1, 2, 3, 4, 5, 6, 7, ♾️]
+    count: Literal[1, 2, 3, 4, 5, 6, 7, 0]
     time: Literal["5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後",]
 ):
+if count == 0:
+        display_count = "∞"
     """
     mode: ゲームモード
     count: 募集人数 (最大7人)
@@ -167,6 +169,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
