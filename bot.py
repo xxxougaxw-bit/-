@@ -161,12 +161,23 @@ async def ranking(
         )
 
     await interaction.response.send_message(embed=embed)
+    # メンションを有効にする設定
+intents = discord.Intents.default()
+intents.members = True # これが必要
+intents.message_content = True
+
+# allowed_mentions を設定することで、ボットからの @everyone を許可します
+client = discord.Client(
+    intents=intents,
+    allowed_mentions=discord.AllowedMentions(everyone=True)
+)
 
 # 実行
 if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
