@@ -74,6 +74,21 @@ async def team(interaction: discord.Interaction, members: str):
 
 from typing import Literal
 
+import random # プログラムの一番上に「import random」がなければ追加してください
+
+@client.tree.command(name="coin", description="コイントスで先攻・後攻を決めます")
+async def coin(interaction: discord.Interaction):
+    result = random.choice(["【先攻】 ⚫️", "【後攻】 ⚪️"])
+    
+    embed = discord.Embed(
+        title="コイントス結果",
+        description=f"結果は... **{result}** です！",
+        color=0xffd700
+    )
+    embed.set_footer(text=f"実行者: {interaction.user.display_name}")
+    
+    await interaction.response.send_message(embed=embed)
+
 @client.tree.command(name="lfm", description="対戦メンバーを募集します")
 async def lfm(
     interaction: discord.Interaction, 
@@ -152,6 +167,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
