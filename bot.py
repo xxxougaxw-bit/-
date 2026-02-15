@@ -89,15 +89,15 @@ async def coin(interaction: discord.Interaction):
     
     await interaction.response.send_message(embed=embed)
 
-@client.tree.command(name="lfm", description="対戦メンバーを募集します")
+@client.tree.command(name="lfm", description="対戦メンバーや通話を募集します")
 async def lfm(
     interaction: discord.Interaction, 
     mode: Literal["ZW", "FFA", "BOX", "1v1", "通話"], 
-    count: Literal[1, 2, 3, 4, 5, 6, 7, 0]
-    time: Literal["5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後",]
+    count: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8], # 0を無限として扱います
+    time: Literal["5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後"]
 ):
-if count == 0:
-        display_count = "∞"
+    # 表示用の人数設定
+    display_count = "無限" if count == 0 else f"{count}人"
     """
     mode: ゲームモード
     count: 募集人数 (最大7人)
@@ -169,6 +169,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
