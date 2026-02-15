@@ -92,8 +92,8 @@ async def coin(interaction: discord.Interaction):
 @client.tree.command(name="lfm", description="対戦メンバーを募集します")
 async def lfm(
     interaction: discord.Interaction, 
-    mode: Literal["ZW", "FFA", "BOX", "1v1"], 
-    count: Literal[1, 2, 3, 4, 5, 6, 7],
+    mode: Literal["ZW", "FFA", "BOX", "1v1", "通話"], 
+    count: Literal[1, 2, 3, 4, 5, 6, 7, ♾️]
     time: Literal["5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後",]
 ):
     """
@@ -167,6 +167,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
