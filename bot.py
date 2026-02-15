@@ -89,16 +89,16 @@ async def lfm(
     
     # 募集メッセージの作成
     embed = discord.Embed(
-        title="🎮 メンバー募集中！",
-        description=f"@everyone\n新しく対戦メンバーを募集しています！",
+        title="🎮募集中🎮",
+        description=f"@everyone\nメンバー募集中",
         color=0x00ff00 # 緑色
     )
     
-    embed.add_field(name="🕹 モード", value=f"**{mode}**", inline=True)
-    embed.add_field(name="👥 あと", value=f"**{count}名**", inline=True)
-    embed.add_field(name="⏰ 期限", value=f"**{time}**", inline=False)
+    embed.add_field(name="モード", value=f"**{mode}**", inline=True)
+    embed.add_field(name="あと", value=f"**{count}名**", inline=True)
+    embed.add_field(name="期限", value=f"**{time}**", inline=False)
     
-    embed.set_footer(text="参加する方はチャットかボイチャへどうぞ！")
+    embed.set_footer(text="参加する人はvcかチャット")
 
     # @everyone付きで送信
     await interaction.response.send_message(content="@everyone", embed=embed)
@@ -107,6 +107,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
