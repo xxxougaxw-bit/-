@@ -90,7 +90,7 @@ async def lfm(
     # 募集メッセージの作成
     embed = discord.Embed(
         title="🎮募集中🎮",
-        description=f"@everyone\nメンバー募集中",
+        description=f"\nメンバー募集中",
         color=0x00ff00 # 緑色
     )
     
@@ -107,6 +107,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
