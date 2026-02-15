@@ -96,11 +96,11 @@ async def lfm(
     count: Literal[1, 2, 3, 4, 5, 6, 7, ], 
     time: Literal["今から", "5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後"]
 ):
-    else:
-        display_count = f"あと {count} 名"
+    """
     mode: ゲームモード
     count: 募集人数 (最大7人)
     time: 終了時間の目安
+    """
     
     # 募集メッセージの作成
     embed = discord.Embed(
@@ -167,6 +167,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
