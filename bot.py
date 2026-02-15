@@ -103,16 +103,29 @@ async def lfm(
     # @everyone付きで送信
     await interaction.response.send_message(content="@everyone", embed=embed)
     
-@client.tree.command(name="ranking", description="本日の戦績ランキングを作成します")
+@client.tree.command(name="ranking", description="本日の戦績ランキング（3〜8名）を作成します")
 async def ranking(
     interaction: discord.Interaction, 
     p1_name: str, p1_win: int, p1_lose: int,
     p2_name: str, p2_win: int, p2_lose: int,
-    p3_name: str, p3_win: int, p3_lose: int
+    p3_name: str, p3_win: int, p3_lose: int,
+    p4_name: str = None, p4_win: int = 0, p4_lose: int = 0,
+    p5_name: str = None, p5_win: int = 0, p5_lose: int = 0,
+    p6_name: str = None, p6_win: int = 0, p6_lose: int = 0,
+    p7_name: str = None, p7_win: int = 0, p7_lose: int = 0,
+    p8_name: str = None, p8_win: int = 0, p8_lose: int = 0
 ):
-    # データをリストにまとめる
+    # データを整理
+    raw_data = [
+        (p1_name, p1_win, p1_lose), (p2_name, p2_win, p2_lose), (p3_name, p3_win, p3_lose),
+        (p4_name, p4_win, p4_lose), (p5_name, p5_win, p5_lose), (p6_name, p6_win, p6_lose),
+        (p7_name, p7_win, p7_lose), (p8_name, p8_win, p8_lose)
+    ]
+    
     players = []
-    for name, w, l in [(p1_name, p1_win, p1_lose), (p2_name, p2_win, p2_lose), (p3_name, p3_win, p3_lose)]:
+    for name, w, l in raw_data:
+        if name is None: continue # 名前がない枠はスキップ
+        
         total = w + l
         rate = (w / total * 100) if total > 0 else 0
         players.append({"name": name, "win": w, "lose": l, "rate": rate})
@@ -120,13 +133,14 @@ async def ranking(
     # 勝率が高い順に並び替え
     players.sort(key=lambda x: x["rate"], reverse=True)
 
-    # ランキングの作成
-    embed = discord.Embed(title="🏆 本日の戦績ランキング", color=0xffd700) # ゴールド
-    
-    medals = ["🥇", "🥈", "🥉"]
+    # 見た目を整える
+    embed = discord.Embed(title="🏆 本日の戦績ランキング", color=0xffd700)
+    medals = ["🥇", "🥈", "🥉", "4位", "5位", "6位", "7位", "8位"]
+
     for i, p in enumerate(players):
+        rank_label = medals[i]
         embed.add_field(
-            name=f"{medals[i]} {p['name']}",
+            name=f"{rank_label} {p['name']}",
             value=f"勝率: **{p['rate']:.1f}%** ({p['win']}勝 {p['lose']}敗)",
             inline=False
         )
@@ -137,6 +151,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
