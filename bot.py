@@ -45,10 +45,10 @@ from typing import Literal
 @client.tree.command(name="rule", description="ゲームのルールを確認します")
 async def rule(interaction: discord.Interaction, mode: Literal["zw", "ffa", "box", "1v1"]):
     rules = {
-        "zw": "【zw】\n・7本先取\n・過度なあおり行為は禁止！",
-        "ffa": "【ffa】\n・7本先取\n・過度なあおり行為は禁止！",
-        "box": "【Box】\n・5本先取\n・過度なあおり行為は禁止！",
-        "1v1": "【1v1】\n・3本先取\n・落下すれば登ってください過度なあおり行為は禁止！",
+        "zw": "【zw】\n・7本先取\n武器の指定はありません。相手との話し合いで決めてください。\n・過度なあおり行為は禁止！",
+        "ffa": "【ffa】\n・7本先取\n武器の指定はありません。相手との話し合いで決めてください。\n・過度なあおり行為は禁止！",
+        "box": "【Box】\n・5本先取\n武器の指定はありません。相手との話し合いで決めてください。\n・過度なあおり行為は禁止！",
+        "1v1": "【1v1】\n・3本先取\n武器の指定はありません。相手との話し合いで決めてください。\n・落下すれば登ってください。過度なあおり行為は禁止！",
     }
     selected_rule = rules.get(mode, "ルールが見つかりませんでした。")
     await interaction.response.send_message(selected_rule)
@@ -152,6 +152,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
