@@ -146,11 +146,44 @@ async def ranking(
         )
 
     await interaction.response.send_message(embed=embed)
+    @client.tree.command(name="total", description="サーバー全体の総合戦績を表示します")
+async def total(interaction: discord.Interaction):
+    if not ranking_data:
+        await interaction.response.send_message("まだデータがありません。`/winrate` で戦績を登録してください。")
+        return
+
+    total_wins = 0
+    total_losses = 0
+    player_count = len(ranking_data)
+
+    # 全プレイヤーの勝敗を合算
+    for data in ranking_data.values():
+        total_wins += data["win"]
+        total_losses += data["lose"]
+
+    total_games = total_wins + total_losses
+    overall_rate = (total_wins / total_games * 100) if total_games > 0 else 0
+
+    embed = discord.Embed(
+        title="🌍 サーバー総合戦績レポート",
+        description=f"現在 **{player_count}名** のデータが集計されています",
+        color=0xe67e22 # オレンジ色
+    )
+    
+    embed.add_field(name="総試合数", value=f"{total_games} 試合", inline=False)
+    embed.add_field(name="総勝利数", value=f"✅ {total_wins} 勝", inline=True)
+    embed.add_field(name="総敗北数", value=f"💀 {total_losses} 敗", inline=True)
+    embed.add_field(name="全体勝率", value=f"📈 **{overall_rate:.1f}%**", inline=False)
+    
+    embed.set_footer(text="※/clear_ranking でリセットされます")
+
+    await interaction.response.send_message(embed=embed)
 # 実行
 if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
