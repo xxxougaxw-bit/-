@@ -94,11 +94,11 @@ async def lfm(
     interaction: discord.Interaction, 
     mode: Literal["ZW", "FFA", "BOX", "1v1", "通話"], 
     count: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8], # 0を無限として扱います
-    time: Literal["今から, 5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後"]
+    time: Literal["今から", "5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後"]
 ):
 # 人数の表示判定
     if count == 0:
-        display_count = "♾️ "
+        display_count = "♾️"
     else:
         display_count = f"あと {count} 名"
     mode: ゲームモード
@@ -170,6 +170,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
