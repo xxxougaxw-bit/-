@@ -72,12 +72,42 @@ async def team(interaction: discord.Interaction, members: str):
     )
     await interaction.response.send_message(response)
 
-# --- この下に winner コマンドなどを繋げる場合も、左端を揃える ---
+from typing import Literal
+
+@client.tree.command(name="lfm", description="対戦メンバーを募集します")
+async def lfm(
+    interaction: discord.Interaction, 
+    mode: Literal["ZW", "FFA", "BOX"], 
+    count: Literal[1, 2, 3, 4, 5, 6, 7],
+    time: Literal["5分後", "10分後", "15分後", "20分後", "30分後", "45分後", "60分後", "21:00まで", "22:00まで", "23:00まで", "24:00まで"]
+):
+    """
+    mode: ゲームモード
+    count: 募集人数 (最大7人)
+    time: 終了時間の目安
+    """
+    
+    # 募集メッセージの作成
+    embed = discord.Embed(
+        title="🎮 メンバー募集中！",
+        description=f"@everyone\n新しく対戦メンバーを募集しています！",
+        color=0x00ff00 # 緑色
+    )
+    
+    embed.add_field(name="🕹 モード", value=f"**{mode}**", inline=True)
+    embed.add_field(name="👥 あと", value=f"**{count}名**", inline=True)
+    embed.add_field(name="⏰ 期限", value=f"**{time}**", inline=False)
+    
+    embed.set_footer(text="参加する方はチャットかボイチャへどうぞ！")
+
+    # @everyone付きで送信
+    await interaction.response.send_message(content="@everyone", embed=embed)
 # 実行
 if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
