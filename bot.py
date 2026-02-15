@@ -13,7 +13,7 @@ def home():
     return "OK"
 
 def run():
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=10000)
 
 def keep_alive():
     t = Thread(target=run)
@@ -122,3 +122,4 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
