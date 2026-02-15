@@ -146,7 +146,8 @@ async def ranking(
         )
 
     await interaction.response.send_message(embed=embed)
-    @client.tree.command(name="total", description="サーバー全体の総合戦績を表示します")
+    
+@client.tree.command(name="total", description="サーバー全体の総合戦績を表示します")
 async def total(interaction: discord.Interaction):
     if not ranking_data:
         await interaction.response.send_message("まだデータがありません。`/winrate` で戦績を登録してください。")
@@ -183,6 +184,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
