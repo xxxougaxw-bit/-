@@ -52,9 +52,38 @@ async def rule(interaction: discord.Interaction, mode: Literal["zw", "ffa", "box
     }
     selected_rule = rules.get(mode, "ルールが見つかりませんでした。")
     await interaction.response.send_message(selected_rule)
+    @client.tree.command(name="team", description="メンバーをランダムに2チームに分けます")
+async def team(interaction: discord.Interaction, members: str):
+    """
+    members: 名前をスペース区切りで入力（例: Aさん Bさん Cさん Dさん）
+    """
+    import random
+    
+    # 入力された名前をリストにする
+    member_list = members.split()
+    
+    if len(member_list) < 2:
+        await interaction.response.send_message("2人以上の名前を入力してください！")
+        return
+
+    # リストをシャッフル
+    random.shuffle(member_list)
+    
+    # 半分で分ける
+    mid = len(member_list) // 2
+    team1 = member_list[:mid]
+    team2 = member_list[mid:]
+
+    response = (
+        f"🏃 **チーム分け結果** 🏃\n\n"
+        f"🟦 **チーム1:** {', '.join(team1)}\n"
+        f"🟧 **チーム2:** {', '.join(team2)}"
+    )
+    await interaction.response.send_message(response)
 # 実行
 if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
