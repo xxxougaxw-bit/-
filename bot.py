@@ -40,9 +40,21 @@ async def winrate(interaction: discord.Interaction, win: int, lose: int):
         return
     rate = (win / total) * 100
     await interaction.response.send_message(f"合計: {total}戦 {win}勝 {lose}敗\n勝率: **{rate:.1f} %**")
+from typing import Literal
 
+@client.tree.command(name="rule", description="ゲームのルールを確認します")
+async def rule(interaction: discord.Interaction, mode: Literal["zw", "ffa", "box", "1v1", "2v2"]):
+    rules = {
+        "zw": "【zw】\n・7本先取\n・過度なあおり行為は禁止！",
+        "ffa": "【ffa】\n・7本先取\n・過度なあおり行為は禁止！",
+        "box": "【Box】\n・5本先取\n・過度なあおり行為は禁止！",
+        "1v1": "【1v1】\n・3本先取\n・落下すれば登ってください過度なあおり行為は禁止！",
+    }
+    selected_rule = rules.get(mode, "ルールが見つかりませんでした。")
+    await interaction.response.send_message(selected_rule)
 # 実行
 if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
