@@ -43,7 +43,7 @@ async def winrate(interaction: discord.Interaction, win: int, lose: int):
 from typing import Literal
 
 @client.tree.command(name="rule", description="ゲームのルールを確認します")
-async def rule(interaction: discord.Interaction, mode: Literal["zw", "ffa", "box", "1v1", "2v2"]):
+async def rule(interaction: discord.Interaction, mode: Literal["zw", "ffa", "box", "1v1"]):
     rules = {
         "zw": "【zw】\n・7本先取\n・過度なあおり行為は禁止！",
         "ffa": "【ffa】\n・7本先取\n・過度なあおり行為は禁止！",
@@ -78,6 +78,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
