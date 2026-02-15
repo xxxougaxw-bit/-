@@ -102,11 +102,41 @@ async def lfm(
 
     # @everyone付きで送信
     await interaction.response.send_message(content="@everyone", embed=embed)
+    @client.tree.command(name="ranking", description="本日の戦績ランキングを作成します")
+async def ranking(
+    interaction: discord.Interaction, 
+    p1_name: str, p1_win: int, p1_lose: int,
+    p2_name: str, p2_win: int, p2_lose: int,
+    p3_name: str, p3_win: int, p3_lose: int
+):
+    # データをリストにまとめる
+    players = []
+    for name, w, l in [(p1_name, p1_win, p1_lose), (p2_name, p2_win, p2_lose), (p3_name, p3_win, p3_lose)]:
+        total = w + l
+        rate = (w / total * 100) if total > 0 else 0
+        players.append({"name": name, "win": w, "lose": l, "rate": rate})
+
+    # 勝率が高い順に並び替え
+    players.sort(key=lambda x: x["rate"], reverse=True)
+
+    # ランキングの作成
+    embed = discord.Embed(title="🏆 本日の戦績ランキング", color=0xffd700) # ゴールド
+    
+    medals = ["🥇", "🥈", "🥉"]
+    for i, p in enumerate(players):
+        embed.add_field(
+            name=f"{medals[i]} {p['name']}",
+            value=f"勝率: **{p['rate']:.1f}%** ({p['win']}勝 {p['lose']}敗)",
+            inline=False
+        )
+
+    await interaction.response.send_message(embed=embed)
 # 実行
 if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
