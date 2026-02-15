@@ -104,7 +104,6 @@ async def lfm(
     mode: ゲームモード
     count: 募集人数 (最大7人)
     time: 終了時間の目安
-    """
     
     # 募集メッセージの作成
     embed = discord.Embed(
@@ -171,6 +170,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
