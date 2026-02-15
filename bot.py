@@ -102,7 +102,8 @@ async def lfm(
 
     # @everyone付きで送信
     await interaction.response.send_message(content="@everyone", embed=embed)
-    @client.tree.command(name="ranking", description="本日の戦績ランキングを作成します")
+    
+@client.tree.command(name="ranking", description="本日の戦績ランキングを作成します")
 async def ranking(
     interaction: discord.Interaction, 
     p1_name: str, p1_win: int, p1_lose: int,
@@ -136,6 +137,7 @@ if __name__ == "__main__":
     keep_alive()  # Webサーバーを起動
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
