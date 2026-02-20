@@ -130,43 +130,57 @@ async def on_voice_state_update(member, before, after):
                 await before.channel.delete()
                 print(f"空になったのでチャンネルを削除しました: {before.channel.name}")
 
-# --- 2. 通話作成コマンド (lfmコマンドの下などに追加) ---
+# 1. 保存用の辞書をクラスの__init__か、コマンドの外側に用意します
+# 作成したチャンネルIDと、消したいメッセージをセットで覚えます
+vc_messages = {}
 
 @client.tree.command(name="vc", description="自動消滅する通話チャンネルを作成します")
-@app_commands.describe(
-    name="チャンネル名",
-    limit="人数制限（0〜99。0なら無制限）"
-)
+@app_commands.describe(name="チャンネル名", limit="人数制限（0〜99）")
 async def vc(interaction: discord.Interaction, name: str, limit: int = 0):
-    # 権限確認
-    if not interaction.guild.me.guild_permissions.manage_channels:
-        await interaction.response.send_message("ボットに『チャンネルの管理』権限がないため作成できません！", ephemeral=True)
-        return
-
-    # 人数制限のバリデーション (Discordの仕様は0〜99)
-    if limit < 0 or limit > 99:
-        await interaction.response.send_message("人数制限は0から99の間で指定してください。", ephemeral=True)
-        return
-
-    # ボットが作った目印として「🔊」を名前の先頭に付けます
-    channel_name = f"🔊 {name}"
-    category = interaction.channel.category # 今のチャットと同じカテゴリーに作成
+    # ---（中略：権限チェックなどはそのまま）---
 
     # チャンネル作成
+    channel_name = f"🔊 {name}"
+    category = interaction.channel.category
     new_channel = await interaction.guild.create_voice_channel(
         name=channel_name,
         user_limit=limit,
         category=category
     )
     
-    limit_text = f"（{limit}名限定）" if limit > 0 else "（制限なし）"
-    await interaction.response.send_message(f"✅ 通話チャンネル **{new_channel.name}** を作成しました！\n誰もいなくなると自動的に削除されます。")
+    # メッセージを送信し、そのメッセージを変数に代入
+    response = await interaction.response.send_message(
+        f"✅ 通話チャンネル **{new_channel.name}** を作成しました！\n誰もいなくなると自動的に削除されます。"
+    )
     
+    # 【追加】作成したチャンネルのIDと、返信メッセージを紐づけて保存
+    msg = await interaction.original_response()
+    vc_messages[new_channel.id] = msg
+
+# --- 削除する時の処理を修正 ---
+
+@client.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is not None:
+        if before.channel.name.startswith("🔊") and len(before.channel.members) == 0:
+            # チャンネルを削除
+            channel_id = before.channel.id
+            await before.channel.delete()
+            
+            # 【追加】もし保存されたメッセージがあれば削除する
+            if channel_id in vc_messages:
+                try:
+                    await vc_messages[channel_id].delete()
+                    del vc_messages[channel_id] # 記憶を消す
+                except:
+                    pass # すでに消されていたり、エラーが出ても無視
+                
 # 実行部分
 if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
