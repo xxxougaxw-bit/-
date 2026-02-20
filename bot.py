@@ -98,25 +98,63 @@ async def lfm(
     # ここで @everyone を送信！
     await interaction.response.send_message(content="@everyone", embed=embed)
 
-@client.tree.command(name="ranking", description="戦績ランキングを作成します")
+@client.tree.command(name="ranking", description="戦績ランキングを作成します（最大8名）")
+@app_commands.describe(
+    p1_name="1人目の名前", p1_win="勝数", p1_lose="敗数",
+    p2_name="2人目の名前", p2_win="勝数", p2_lose="敗数",
+    p3_name="3人目の名前", p3_win="勝数", p3_lose="敗数",
+    p4_name="4人目（任意）", p4_win="勝数", p4_lose="敗数",
+    p5_name="5人目（任意）", p5_win="勝数", p5_lose="敗数",
+    p6_name="6人目（任意）", p6_win="勝数", p6_lose="敗数",
+    p7_name="7人目（任意）", p7_win="勝数", p7_lose="敗数",
+    p8_name="8人目（任意）", p8_win="勝数", p8_lose="敗数"
+)
 async def ranking(
     interaction: discord.Interaction, 
     p1_name: str, p1_win: int, p1_lose: int,
     p2_name: str, p2_win: int, p2_lose: int,
-    p3_name: str, p3_win: int, p3_lose: int
+    p3_name: str, p3_win: int, p3_lose: int,
+    # 4人目以降は None をデフォルト値にすることで「任意」になります
+    p4_name: str = None, p4_win: int = 0, p4_lose: int = 0,
+    p5_name: str = None, p5_win: int = 0, p5_lose: int = 0,
+    p6_name: str = None, p6_win: int = 0, p6_lose: int = 0,
+    p7_name: str = None, p7_win: int = 0, p7_lose: int = 0,
+    p8_name: str = None, p8_win: int = 0, p8_lose: int = 0
 ):
+    # データをリストにまとめる
+    raw_data = [
+        (p1_name, p1_win, p1_lose),
+        (p2_name, p2_win, p2_lose),
+        (p3_name, p3_win, p3_lose),
+        (p4_name, p4_win, p4_lose),
+        (p5_name, p5_win, p5_lose),
+        (p6_name, p6_win, p6_lose),
+        (p7_name, p7_win, p7_lose),
+        (p8_name, p8_win, p8_lose)
+    ]
+
     players = []
-    for n, w, l in [(p1_name, p1_win, p1_lose), (p2_name, p2_win, p2_lose), (p3_name, p3_win, p3_lose)]:
-        total = w + l
-        rate = (w / total * 100) if total > 0 else 0
-        players.append({"name": n, "win": w, "lose": l, "rate": rate})
+    for n, w, l in raw_data:
+        # 名前が入力されている人だけを処理対象にする
+        if n is not None:
+            total = w + l
+            rate = (w / total * 100) if total > 0 else 0
+            players.append({"name": n, "win": w, "lose": l, "rate": rate})
     
+    # 勝率順に並び替え
     players.sort(key=lambda x: x["rate"], reverse=True)
+    
     embed = discord.Embed(title="🏆 戦績ランキング", color=0xffd700)
     for i, p in enumerate(players):
-        embed.add_field(name=f"{i+1}位 {p['name']}", value=f"勝率: {p['rate']:.1f}%", inline=False)
+        # 順位に応じた絵文字
+        medal = "🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else "👤"
+        embed.add_field(
+            name=f"{medal} {i+1}位: {p['name']}", 
+            value=f"勝率: **{p['rate']:.1f}%** ({p['win']}勝 {p['lose']}敗)", 
+            inline=False
+        )
+    
     await interaction.response.send_message(embed=embed)
-
 # --- 1. ボットのイベント設定 (最後の方に追加) ---
 
 @client.event
@@ -180,6 +218,7 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
