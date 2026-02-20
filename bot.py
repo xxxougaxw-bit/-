@@ -252,7 +252,7 @@ async def update(interaction: discord.Interaction):
 
     # 機能2: 通話作成（自動削除）
     embed.add_field(
-        name="🔊 **カスタム通話作成 (`/vc`) ** 🔥 **[NEW]** 🔥",
+        name="🔥 **[NEW]** 🔥🔊 **カスタム通話作成 (`/vc`) **",
         value=(
             "・使い捨ての通話チャンネルを爆速で作ります。\n"
             "・**[自動削除]** 全員が退出すると部屋も案内メッセージも消えてスッキリ！"
@@ -297,6 +297,7 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
