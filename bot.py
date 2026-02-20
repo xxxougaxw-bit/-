@@ -117,10 +117,56 @@ async def ranking(
         embed.add_field(name=f"{i+1}位 {p['name']}", value=f"勝率: {p['rate']:.1f}%", inline=False)
     await interaction.response.send_message(embed=embed)
 
+# --- 1. ボットのイベント設定 (最後の方に追加) ---
+
+@client.event
+async def on_voice_state_update(member, before, after):
+    # 「誰かがボイスチャンネルから出た」とき
+    if before.channel is not None:
+        # そのチャンネルの名前が「🔊」で始まっているかチェック（ボットが作った目印）
+        if before.channel.name.startswith("🔊"):
+            # チャンネルが空っぽになったら削除
+            if len(before.channel.members) == 0:
+                await before.channel.delete()
+                print(f"空になったのでチャンネルを削除しました: {before.channel.name}")
+
+# --- 2. 通話作成コマンド (lfmコマンドの下などに追加) ---
+
+@client.tree.command(name="vc", description="自動消滅する通話チャンネルを作成します")
+@app_commands.describe(
+    name="チャンネル名",
+    limit="人数制限（0〜99。0なら無制限）"
+)
+async def vc(interaction: discord.Interaction, name: str, limit: int = 0):
+    # 権限確認
+    if not interaction.guild.me.guild_permissions.manage_channels:
+        await interaction.response.send_message("ボットに『チャンネルの管理』権限がないため作成できません！", ephemeral=True)
+        return
+
+    # 人数制限のバリデーション (Discordの仕様は0〜99)
+    if limit < 0 or limit > 99:
+        await interaction.response.send_message("人数制限は0から99の間で指定してください。", ephemeral=True)
+        return
+
+    # ボットが作った目印として「🔊」を名前の先頭に付けます
+    channel_name = f"🔊 {name}"
+    category = interaction.channel.category # 今のチャットと同じカテゴリーに作成
+
+    # チャンネル作成
+    new_channel = await interaction.guild.create_voice_channel(
+        name=channel_name,
+        user_limit=limit,
+        category=category
+    )
+    
+    limit_text = f"（{limit}名限定）" if limit > 0 else "（制限なし）"
+    await interaction.response.send_message(f"✅ 通話チャンネル **{new_channel.name}** を作成しました！\n誰もいなくなると自動的に削除されます。")
+    
 # 実行部分
 if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
