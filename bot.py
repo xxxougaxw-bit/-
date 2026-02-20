@@ -215,7 +215,7 @@ async def on_voice_state_update(member, before, after):
 
 # --- 設定項目（自分のIDに書き換えてください） ---
 MY_USER_ID = 1169659712841711658  # あなたのユーザーID
-INFO_CHANNEL_ID = 1472389082100400140/1474247948098474084  # 案内を投稿したいチャンネルのID
+INFO_CHANNEL_ID = 1474247948098474084  # 案内を投稿したいチャンネルのID
 
 @client.tree.command(name="update", description="【管理者専用】ボットの全機能ガイドを最新版に更新して投稿します")
 async def update(interaction: discord.Interaction):
@@ -297,6 +297,7 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
