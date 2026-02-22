@@ -213,6 +213,53 @@ async def on_voice_state_update(member, before, after):
                 except:
                     pass # すでに消されていたり、エラーが出ても無視
 
+@client.tree.command(name="reloadaim", description="【鬼のAIM練習計算】")
+@app_commands.describe(
+    kill="キル数", 
+    death="デス数", 
+    victory="ビクトリーロイヤルできたか",
+    early_exit="リブート無効になる前に全滅（早期脱落）したか"
+)
+async def reloadaim(
+    interaction: discord.Interaction, 
+    kill: int, 
+    death: int, 
+    victory: Literal["した", "してない"],
+    early_exit: Literal["はい（早期脱落）", "いいえ"]
+):
+    # 1. 早期脱落（リブート無効前）なら問答無用で60分
+    if early_exit == "はい（早期脱落）":
+        total_time = 60.0
+        description = "🚨 **リブート無効前の早期脱落！**\n言い訳無用の「1時間」AIM練習です。"
+        color = 0x000000  # 黒
+    else:
+        # 2. 通常計算
+        # ビクロイなしなら1デス10分、ありなら5分
+        death_weight = 5 if victory == "した" else 10
+        death_time = death * death_weight
+
+        # キル数の計算（奇数なら繰り下げ）
+        # 3キル // 2 = 1, 1 * 1.0分(0.5*2) = 1.0分短縮
+        effective_kills = (kill // 2) * 2
+        kill_reduction = effective_kills * 0.5
+
+        total_time = max(0.0, death_time - kill_reduction)
+        description = "戦績から算出した練習時間です。"
+        color = 0xff4500 if total_time > 30 else 0x00ff00
+
+    embed = discord.Embed(title="🎯 AIMトレーニング指令室", description=description, color=color)
+    
+    if early_exit == "いいえ":
+        v_text = "👑 ビクロイ達成！" if victory == "した" else "💀 敗北..."
+        embed.add_field(name="結果", value=v_text, inline=True)
+        embed.add_field(name="戦績", value=f"⚔️ {kill}K / 🩸 {death}D", inline=True)
+        embed.add_field(name="計算内訳", value=f"デス重み: {death_time}分\nキル短縮: -{kill_reduction}分", inline=False)
+    
+    embed.add_field(name="🔥 必要なAIM練習時間", value=f"**{total_time:.1f} 分**", inline=False)
+    embed.set_footer(text="サボればサボるほど、次の試合で負けますよ^^")
+
+    await interaction.response.send_message(embed=embed)
+
 # --- 設定項目（自分のIDに書き換えてください） ---
 MY_USER_ID = 1169659712841711658  # あなたのユーザーID
 INFO_CHANNEL_ID = 1474247948098474084  # 案内を投稿したいチャンネルのID
@@ -238,6 +285,15 @@ async def update(interaction: discord.Interaction):
         title="🤖 **Jeysty 完全機能ガイド (最新版)**",
         description="サーバーを盛り上げる全機能の使い方ガイドです！",
         color=0x00ff7f  # 鮮やかな緑
+    )
+embed.add_field(
+        name=" 🔥 **[NEW]** 🔥🎯 **AIM練習計算 (`/reloadaim`)** ",
+        value=(
+            "・試合結果から必要なAIM練習時間を算出します。\n"
+            "・**[重要]** リブート無効前の早期脱落は**1時間確定**！\n"
+            "・ビクロイならデス加算が半分に軽減されます。"
+        ),
+        inline=False
     )
 
     # 機能1: 募集機能
@@ -297,6 +353,7 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
