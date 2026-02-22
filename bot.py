@@ -247,16 +247,16 @@ async def reloadaim(
         description = "戦績から算出した練習時間です。"
         color = 0xff4500 if total_time > 30 else 0x00ff00
 
-    embed = discord.Embed(title="🎯 AIMトレーニング指令室", description=description, color=color)
+    embed = discord.Embed(title="🎯 AIM練習指令室", description=description, color=color)
     
     if early_exit == "いいえ":
         v_text = "👑 ビクロイ達成！" if victory == "した" else "💀 敗北..."
         embed.add_field(name="結果", value=v_text, inline=True)
-        embed.add_field(name="戦績", value=f"⚔️ {kill}K / 🩸 {death}D", inline=True)
-        embed.add_field(name="計算内訳", value=f"デス重み: {death_time}分\nキル短縮: -{kill_reduction}分", inline=False)
+        embed.add_field(name="戦績", value=f"⚔️ {kill}Kill / 🩸 {death}Death", inline=True)
+        embed.add_field(name="計算内訳", value=f"デス計算: {death_time}分\nキル短縮: -{kill_reduction}分", inline=False)
     
     embed.add_field(name="🔥 必要なAIM練習時間", value=f"**{total_time:.1f} 分**", inline=False)
-    embed.set_footer(text="サボればサボるほど、次の試合で負けますよ^^")
+    embed.set_footer(text="全然さぼっていいですよｗ、あなたは今後負けますけどね^^")
 
     await interaction.response.send_message(embed=embed)
 
@@ -354,6 +354,7 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
