@@ -286,6 +286,7 @@ async def update(interaction: discord.Interaction):
         description="サーバーを盛り上げる全機能の使い方ガイドです！",
         color=0x00ff7f  # 鮮やかな緑
     )
+    
 embed.add_field(
         name=" 🔥 **[NEW]** 🔥🎯 **AIM練習計算 (`/reloadaim`)** ",
         value=(
@@ -353,6 +354,7 @@ if __name__ == "__main__":
     keep_alive()
     token = os.getenv('DISCORD_TOKEN')
     client.run(token)
+
 
 
 
